@@ -1,0 +1,30 @@
+pipeline {
+    agent { label 'java24 && maven3' }
+
+    stages {
+        stage('Build with JDK 24 / Maven 3.9.6') {
+            steps {
+                echo "=== Building jdk24-app with Java 24 + Maven 3.9.6 ==="
+                sh '''
+                    echo "Environment:"
+                    java -version
+                    mvn -v
+                    echo "Hello from JDK 24 build!"
+                    mvn clean package -DskipTests
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Build on Java 24 successful."
+        }
+        failure {
+            echo "Build on Java 24 failed."
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
