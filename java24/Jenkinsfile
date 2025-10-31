@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'java24 && maven3' }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('Build with JDK 24 / Maven 3.9.6') {
             steps {

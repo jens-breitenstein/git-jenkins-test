@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'java8 && maven2' }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('Build with JDK 8 / Maven 2.2.1') {
             steps {
