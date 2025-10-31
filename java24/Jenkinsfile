@@ -1,2 +1,12 @@
-def common = load '../jenkins.d/Jenkinsfile-common.groovy'
-common.buildAndDeploy('java24', 'jdk24_mvn3')
+node('jdk24_mvn3') {
+    def common = load '../jenkins.d/Jenkinsfile-common.groovy'
+
+    stage('Build & Deploy Java 24') {
+        common.setupMavenSettings()
+        dir('java24') {
+            echo "=== Building java24 with Maven 3.9.6 ==="
+            sh 'mvn clean install -DskipTests'
+            sh 'mvn deploy -DskipTests'
+        }
+    }
+}

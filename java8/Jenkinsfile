@@ -1,2 +1,12 @@
-def common = load '../jenkins.d/Jenkinsfile-common.groovy'
-common.buildAndDeploy('java8', 'jdk8_mvn2')
+node('jdk8_mvn2') {
+    def common = load '../jenkins.d/Jenkinsfile-common.groovy'
+
+    stage('Build & Deploy Java 8') {
+        common.setupMavenSettings()
+        dir('java8') {
+            echo "=== Building java8 with Maven 2.2.1 ==="
+            sh 'mvn clean install -DskipTests'
+            sh 'mvn deploy -DskipTests'
+        }
+    }
+}
