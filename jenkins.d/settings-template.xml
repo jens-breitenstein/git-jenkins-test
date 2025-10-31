@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <!-- ===============================================================
+         MAVEN SETTINGS TEMPLATE (used by Jenkins CI)
+         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         This file is mounted read-only into Jenkins build agents and
+         filled dynamically at runtime by Jenkins pipeline scripts.
+
+         Placeholders are replaced like this:
+           __BUILD_USER__        → injected build user
+           __BUILD_PASSWORD__    → injected build password
+           __DEPLOY_USER__       → injected deploy user
+           __DEPLOY_PASSWORD__   → injected deploy password
+
+         Developers building locally should use `settings-dev.xml`.
+         =============================================================== -->
+
+    <!-- ==========================================
+         SERVER AUTHENTICATION
+         ========================================== -->
+    <servers>
+        <!-- Used for resolving dependencies -->
+        <server>
+            <id>nexus</id>
+            <username>__BUILD_USER__</username>
+            <password>__BUILD_PASSWORD__</password>
+        </server>
+
+        <!-- Used for deploying artifacts -->
+        <server>
+            <id>nexus-deploy</id>
+            <username>__DEPLOY_USER__</username>
+            <password>__DEPLOY_PASSWORD__</password>
+        </server>
+    </servers>
+
+    <!-- ==========================================
+         MIRRORS
+         ========================================== -->
+    <mirrors>
+        <!-- Redirect all repository access through Nexus -->
+        <mirror>
+            <id>nexus</id>
+            <mirrorOf>*</mirrorOf>
+            <url>http://nexus:8081/repository/maven-public/</url>
+        </mirror>
+    </mirrors>
+
+    <!-- ==========================================
+         PROFILES (repository configuration)
+         ========================================== -->
+    <profiles>
+
+        <!-- Profile for standard dependency resolution -->
+        <profile>
+            <id>nexus</id>
+
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>http://nexus:8081/repository/maven-public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central</id>
+                    <url>http://nexus:8081/repository/maven-public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+
+        </profile>
+
+        <!-- Profile for deployment to hosted repos -->
+        <profile>
+            <id>nexus-deploy</id>
+
+            <distributionManagement>
+                <repository>
+                    <id>nexus-deploy</id>
+                    <url>http://nexus:8081/repository/maven-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>nexus-deploy</id>
+                    <url>http://nexus:8081/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+
+        </profile>
+
+    </profiles>
+
+    <!-- ==========================================
+         ACTIVE PROFILES
+         ========================================== -->
+    <activeProfiles>
+        <activeProfile>nexus</activeProfile>
+        <activeProfile>nexus-deploy</activeProfile>
+    </activeProfiles>
+
+</settings>

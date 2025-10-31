@@ -22,6 +22,20 @@ pipeline {
         }
     }
 
+    stage('Deploy to Nexus') {
+        when { expression { currentBuild.currentResult == 'SUCCESS' } }
+        steps {
+            dir('java8') {
+                sh '''
+                    echo "=== Deploying artifact to Nexus ==="
+                    mvn deploy -DskipTests \
+                        -Dnexus.username=$JENKINS_USERNAME \
+                        -Dnexus.password=$JENKINS_TOKEN
+                '''
+            }
+        }
+    }
+
     post {
         success {
             echo "Build on Java 8 successful."

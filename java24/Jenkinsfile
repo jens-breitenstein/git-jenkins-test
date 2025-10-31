@@ -5,17 +5,53 @@ pipeline {
         githubPush()
     }
 
+    environment {
+        MAVEN_SETTINGS_PATH = "${WORKSPACE}/jenkins.d/settings-dev.xml"
+    }
+
     stages {
-        stage('Build with JDK 24 / Maven 3.9.6') {
+        stage('Prepare Maven settings') {
             steps {
-                dir('java8') {
-                    echo "=== Building jdk24-app with Java 24 + Maven 3.9.6 ==="
+                script {
+                    echo "Running in Jenkins CI — using secure template."
                     sh '''
-                        echo "Environment:"
-                        java -version
-                        mvn -v
-                        echo "Hello from JDK 24 build!"
+                        mkdir -p ~/.m2
+                        cp /jenkins.d/settings-template.xml ~/.m2/settings.xml
+                    '''
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "=== Building jdk24-app with Java 24 + Maven 3.9.6 ==="
+                withCredentials([
+                    usernamePassword(credentialsId: 'nexus-build', usernameVariable: 'NEXUS_BUILD_USER', passwordVariable: 'NEXUS_BUILD_PASS')
+                ]) {
+                    sh '''
+                        if [ -f /jenkins.d/settings-template.xml ]; then
+                            sed -i "s|__BUILD_USER__|${NEXUS_BUILD_USER}|g" ~/.m2/settings.xml
+                            sed -i "s|__BUILD_PASSWORD__|${NEXUS_BUILD_PASS}|g" ~/.m2/settings.xml
+                        fi
+
                         mvn clean package -DskipTests
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            when { expression { currentBuild.currentResult == 'SUCCESS' && fileExists('/jenkins.d/settings-template.xml') } }
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: 'nexus-deploy', usernameVariable: 'NEXUS_DEPLOY_USER', passwordVariable: 'NEXUS_DEPLOY_PASS')
+                ]) {
+                    sh '''
+                        echo "=== Injecting deploy credentials ==="
+                        sed -i "s|__DEPLOY_USER__|${NEXUS_DEPLOY_USER}|g" ~/.m2/settings.xml
+                        sed -i "s|__DEPLOY_PASSWORD__|${NEXUS_DEPLOY_PASS}|g" ~/.m2/settings.xml
+
+                        mvn deploy -DskipTests
                     '''
                 }
             }
@@ -23,14 +59,8 @@ pipeline {
     }
 
     post {
-        success {
-            echo "Build on Java 24 successful."
-        }
-        failure {
-            echo "Build on Java 24 failed."
-        }
-        always {
-            cleanWs()
-        }
+        success { echo "Build & Deploy on Java 24 successful." }
+        failure { echo "Build on Java 24 failed." }
+        always  { cleanWs() }
     }
 }

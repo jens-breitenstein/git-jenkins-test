@@ -21,4 +21,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-deploy</id>
+            <name>Company Release Repository</name>
+            <url>http://nexus:8081/repository/git-test-release-repository/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-deploy</id>
+            <name>Company Snapshot Repository</name>
+            <url>http://nexus:8081/repository/git-test-snapshot-repository/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
