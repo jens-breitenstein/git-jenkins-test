@@ -1,16 +1,16 @@
 def setupMavenSettings() {
     echo "Running in Jenkins CI — using secure template."
     withCredentials([
-            usernamePassword(
-                    credentialsId: 'nexus-build',
-                    usernameVariable: 'NEXUS_BUILD_USER',
-                    passwordVariable: 'NEXUS_BUILD_PASS'
-            ),
-            usernamePassword(
-                    credentialsId: 'nexus-deploy',
-                    usernameVariable: 'NEXUS_DEPLOY_USER',
-                    passwordVariable: 'NEXUS_DEPLOY_PASS'
-            )
+        usernamePassword(
+            credentialsId: 'jenkins-build',
+            usernameVariable: 'NEXUS_BUILD_USER',
+            passwordVariable: 'NEXUS_BUILD_PASS'
+        ),
+        usernamePassword(
+            credentialsId: 'jenkins-deploy',
+            usernameVariable: 'NEXUS_DEPLOY_USER',
+            passwordVariable: 'NEXUS_DEPLOY_PASS'
+        )
     ]) {
         sh '''
             mkdir -p ~/.m2
