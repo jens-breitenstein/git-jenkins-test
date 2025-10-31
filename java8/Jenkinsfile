@@ -1,10 +1,7 @@
 node('jdk8_mvn2') {
     checkout scm
     def common = load 'jenkins.d/Jenkinsfile-common.groovy'
-
-    stage('Prepare Maven settings') {
-        common.setupMavenSettings()
-    }
+    common.setupMavenSettings()
 
     stage('Build with Maven 2.2.1 (legacy proof)') {
         dir('java8') {
