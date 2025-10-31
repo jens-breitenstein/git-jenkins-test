@@ -1,5 +1,6 @@
 node('jdk8_mvn2') {
-    def common = load '../jenkins.d/Jenkinsfile-common.groovy'
+    checkout scm
+    def common = load 'jenkins.d/Jenkinsfile-common.groovy'
 
     stage('Build & Deploy Java 8') {
         common.setupMavenSettings()

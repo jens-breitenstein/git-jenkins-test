@@ -1,5 +1,6 @@
 node('jdk24_mvn3') {
-    def common = load '../jenkins.d/Jenkinsfile-common.groovy'
+    checkout scm
+    def common = load 'jenkins.d/Jenkinsfile-common.groovy'
 
     stage('Build & Deploy Java 24') {
         common.setupMavenSettings()
