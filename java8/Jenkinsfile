@@ -8,14 +8,16 @@ pipeline {
     stages {
         stage('Build with JDK 8 / Maven 2.2.1') {
             steps {
-                echo "=== Building jdk8-app with Java 8 + Maven 2.2.1 ==="
-                sh '''
-                    echo "Environment:"
-                    java -version
-                    mvn -v
-                    echo "Hello from JDK 8 build!"
-                    mvn clean package -DskipTests
-                '''
+                dir('java8') {
+                    echo "=== Building jdk8-app with Java 8 + Maven 2.2.1 ==="
+                    sh '''
+                        echo "Environment:"
+                        java -version
+                        mvn -v
+                        echo "Hello from JDK 8 build!"
+                        mvn clean package -DskipTests
+                    '''
+                }
             }
         }
     }
