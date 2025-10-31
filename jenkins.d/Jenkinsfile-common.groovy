@@ -13,47 +13,26 @@ def setupMavenSettings() {
         )
     ]) {
         sh '''
-            mkdir -p ~/.m2
+            set -e
+            mkdir -p "$HOME/.m2"
 
-            # Copy from workspace (primary source)
             if [ -f "${WORKSPACE}/jenkins.d/settings-template.xml" ]; then
-                cp "${WORKSPACE}/jenkins.d/settings-template.xml" ~/.m2/settings.xml
+                cp "${WORKSPACE}/jenkins.d/settings-template.xml" "$HOME/.m2/settings.xml"
             elif [ -f "/jenkins.d/settings-template.xml" ]; then
-                # fallback if mounted separately (legacy setup)
-                cp /jenkins.d/settings-template.xml ~/.m2/settings.xml
+                cp /jenkins.d/settings-template.xml "$HOME/.m2/settings.xml"
             else
-                echo "ERROR: Could not find settings-template.xml" >&2
+                echo "ERROR: settings-template.xml not found" >&2
                 exit 1
             fi
 
-            # Replace placeholders with secured credentials
-            sed -i "s|__BUILD_USER__|${NEXUS_BUILD_USER}|g" ~/.m2/settings.xml
-            sed -i "s|__BUILD_PASSWORD__|${NEXUS_BUILD_PASS}|g" ~/.m2/settings.xml
-            sed -i "s|__DEPLOY_USER__|${NEXUS_DEPLOY_USER}|g" ~/.m2/settings.xml
-            sed -i "s|__DEPLOY_PASSWORD__|${NEXUS_DEPLOY_PASS}|g" ~/.m2/settings.xml
+            sed -i "s|__BUILD_USER__|${NEXUS_BUILD_USER}|g" "$HOME/.m2/settings.xml"
+            sed -i "s|__BUILD_PASSWORD__|${NEXUS_BUILD_PASS}|g" "$HOME/.m2/settings.xml"
+            sed -i "s|__DEPLOY_USER__|${NEXUS_DEPLOY_USER}|g" "$HOME/.m2/settings.xml"
+            sed -i "s|__DEPLOY_PASSWORD__|${NEXUS_DEPLOY_PASS}|g" "$HOME/.m2/settings.xml"
+
+            echo '--- Verify resulting file ---'
+            ls -ld "$HOME/.m2/settings.xml"
+            grep -A3 "<server>" "$HOME/.m2/settings.xml" || true
         '''
     }
 }
-
-def buildAndDeploy(String dirName, String jdkLabel) {
-    stage("Prepare Maven settings") {
-        setupMavenSettings()
-    }
-
-    stage("Build") {
-        dir(dirName) {
-            echo "=== Building ${dirName} with ${jdkLabel} ==="
-            sh "mvn clean install"
-        }
-    }
-
-    stage("Deploy to Nexus") {
-        if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
-            dir(dirName) {
-                echo "=== Deploying ${dirName} with ${jdkLabel} ==="
-                sh "mvn deploy -DskipTests"
-            }
-        }
-    }
-}
-return this
