@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'java8 && maven2' }
+    agent { label 'jdk8_mvn2' }
 
     triggers {
         githubPush()

@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'java24 && maven3' }
+    agent { label 'jdk24_mvn3' }
 
     triggers {
         githubPush()
