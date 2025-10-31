@@ -25,14 +25,14 @@
     <servers>
         <!-- Used for resolving dependencies -->
         <server>
-            <id>nexus</id>
+            <id>j́enkins-build</id>
             <username>__BUILD_USER__</username>
             <password>__BUILD_PASSWORD__</password>
         </server>
 
         <!-- Used for deploying artifacts -->
         <server>
-            <id>nexus-deploy</id>
+            <id>jenkins-deploy</id>
             <username>__DEPLOY_USER__</username>
             <password>__DEPLOY_PASSWORD__</password>
         </server>

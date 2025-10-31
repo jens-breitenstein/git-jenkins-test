@@ -37,27 +37,18 @@ def setupMavenSettings() {
 
 def buildAndDeploy(String dirName, String jdkLabel) {
     stage("Prepare Maven settings") {
-        steps {
-            script {
-                setupMavenSettings()
-            }
-        }
+        setupMavenSettings()
     }
 
     stage("Build") {
-        steps {
-            dir(dirName) {
-                echo "=== Building ${dirName} with ${jdkLabel} ==="
-                sh "mvn clean install -DskipTests"
-            }
+        dir(dirName) {
+            echo "=== Building ${dirName} with ${jdkLabel} ==="
+            sh "mvn clean install"
         }
     }
 
     stage("Deploy to Nexus") {
-        when {
-            expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-        }
-        steps {
+        if (currentBuild.resultIsBetterOrEqualTo('SUCCESS')) {
             dir(dirName) {
                 echo "=== Deploying ${dirName} with ${jdkLabel} ==="
                 sh "mvn deploy -DskipTests"
