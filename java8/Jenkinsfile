@@ -7,7 +7,7 @@ node('jdk8_mvn2') {
         dir('java8') {
             echo "=== Building java8 with Maven 2.2.1 ==="
             sh 'mvn clean install'
-            sh 'mvn deploy -P nexus-deploy -DskipTests'
+            sh 'mvn deploy -DskipTests'
         }
     }
 }

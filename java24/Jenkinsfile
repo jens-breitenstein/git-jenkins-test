@@ -7,7 +7,7 @@ node('jdk24_mvn3') {
         dir('java24') {
             echo "=== Building java24 with Maven 3.9.6 ==="
             sh 'mvn clean install'
-            sh 'mvn deploy -P nexus-deploy -DskipTests'
+            sh 'mvn deploy -DskipTests'
         }
     }
 }
