@@ -23,9 +23,10 @@
          SERVER AUTHENTICATION
          ========================================== -->
     <servers>
-        <!-- Used for resolving dependencies -->
+        <!-- Used for resolving dependencies
+             see Jenkins-common.groovy -->
         <server>
-            <id>j́enkins-build</id>
+            <id>jenkins-build</id>
             <username>__BUILD_USER__</username>
             <password>__BUILD_PASSWORD__</password>
         </server>
