@@ -11,8 +11,9 @@ node('jdk8_mvn2') {
             echo "=== Building java8 with Maven 2.2.1 (legacy mode) ==="
             sh '''
                 echo "Using Maven 2.x from: $MAVEN2_HOME"
-                $MAVEN2_HOME/bin/mvn -v
-                $MAVEN2_HOME/bin/mvn clean install -DskipTests
+                # $MAVEN2_HOME/bin/mvn -v
+                # $MAVEN2_HOME/bin/mvn clean install
+                $MAVEN3_HOME/bin/mvn clean install
             '''
         }
     }
