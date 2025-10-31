@@ -54,7 +54,6 @@
          PROFILES (repository configuration)
          ========================================== -->
     <profiles>
-
         <!-- Profile for standard dependency resolution -->
         <profile>
             <id>nexus</id>
@@ -88,26 +87,7 @@
                     </snapshots>
                 </pluginRepository>
             </pluginRepositories>
-
         </profile>
-
-        <!-- Profile for deployment to hosted repos -->
-        <profile>
-            <id>nexus-deploy</id>
-
-            <distributionManagement>
-                <repository>
-                    <id>nexus-deploy</id>
-                    <url>http://nexus:8081/repository/maven-releases/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>nexus-deploy</id>
-                    <url>http://nexus:8081/repository/maven-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-
-        </profile>
-
     </profiles>
 
     <!-- ==========================================
@@ -115,7 +95,6 @@
          ========================================== -->
     <activeProfiles>
         <activeProfile>nexus</activeProfile>
-        <activeProfile>nexus-deploy</activeProfile>
     </activeProfiles>
 
 </settings>
