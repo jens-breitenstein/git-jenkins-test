@@ -26,14 +26,14 @@
         <!-- Used for resolving dependencies
              see Jenkins-common.groovy -->
         <server>
-            <id>jenkins-build</id>
+            <id>nexus</id>
             <username>__BUILD_USER__</username>
             <password>__BUILD_PASSWORD__</password>
         </server>
 
         <!-- Used for deploying artifacts -->
         <server>
-            <id>jenkins-deploy</id>
+            <id>nexus-deploy</id>
             <username>__DEPLOY_USER__</username>
             <password>__DEPLOY_PASSWORD__</password>
         </server>
