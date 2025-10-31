@@ -36,3 +36,5 @@ def setupMavenSettings() {
         '''
     }
 }
+
+return this
