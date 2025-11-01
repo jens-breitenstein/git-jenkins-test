@@ -7,13 +7,13 @@ node('jdk24_mvn3') {
         dir('java24') {
             echo "=== Building java24 with Maven 3.9.6 ==="
             sh '''
-                mvn clean install \
+                mvn -q -ntp clean install \
                     -Djenkins.jobName=$JOB_NAME \
                     -Djenkins.buildNumber=$BUILD_NUMBER \
                     -Djenkins.nodeName=$NODE_NAME
             '''
 
-            sh 'mvn deploy -DskipTests'
+            sh 'mvn -q -ntp deploy -DskipTests'
         }
     }
 }
