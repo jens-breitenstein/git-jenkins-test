@@ -6,7 +6,13 @@ node('jdk24_mvn3') {
         common.setupMavenSettings()
         dir('java24') {
             echo "=== Building java24 with Maven 3.9.6 ==="
-            sh 'mvn clean install'
+            sh '''
+                mvn clean install \
+                    -Djenkins.jobName=$JOB_NAME \
+                    -Djenkins.buildNumber=$BUILD_NUMBER \
+                    -Djenkins.nodeName=$NODE_NAME
+            '''
+
             sh 'mvn deploy -DskipTests'
         }
     }
