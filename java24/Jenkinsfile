@@ -4,8 +4,8 @@ node('jdk24_mvn3') {
 
     stage('Check Push User') {
         script {
-            def pusher = sh(returnStdout: true, script: "git log -1 --pretty=format:'%an'").trim()
-            if (!["jens-breitenstein"].contains(pusher)) {
+            def pusher = sh(returnStdout: true, script: "git log -1 --pretty=format:'%ae'").trim()
+            if (!["jens.breitenstein@anevis-solutions.com"].contains(pusher)) {
                 currentBuild.result = 'NOT_BUILT'
                 error("Build skipped: pushed by unauthorized user '$pusher'")
             }

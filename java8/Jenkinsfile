@@ -2,6 +2,16 @@ node('jdk8_mvn3') {
     checkout scm
     def common = load 'jenkins.d/Jenkinsfile-common.groovy'
 
+    stage('Check Push User') {
+        script {
+            def pusher = sh(returnStdout: true, script: "git log -1 --pretty=format:'%ae'").trim()
+            if (!["jens.breitenstein@anevis-solutions.com"].contains(pusher)) {
+                currentBuild.result = 'NOT_BUILT'
+                error("Build skipped: pushed by unauthorized user '$pusher'")
+            }
+        }
+    }
+
     stage('Build with Maven 3.2.5') {
         common.setupMavenSettings()
         dir('java8') {
