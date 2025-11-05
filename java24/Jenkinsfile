@@ -2,6 +2,19 @@ node('jdk24_mvn3') {
     checkout scm
     def common = load 'jenkins.d/Jenkinsfile-common.groovy'
 
+    stage('Check Push User') {
+      steps {
+        checkout scm
+        script {
+          def pusher = sh(returnStdout: true, script: "git log -1 --pretty=format:'%an'").trim()
+          if (!["jens.breitenstein"].contains(pusher)) {
+            currentBuild.result = 'NOT_BUILT'
+            error("Build skipped: pushed by unauthorized user '$pusher'")
+          }
+        }
+      }
+    }
+
     stage('Build & Deploy Java 24') {
         common.setupMavenSettings()
         dir('java24') {
